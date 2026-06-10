@@ -1,5 +1,7 @@
 package main
 
-func Serach(dictionary map[string]string, word string) string {
-	return dictionary[word]
+type Dictionary map[string]string
+
+func (d Dictionary) Serach(word string) string {
+	return d[word]
 }

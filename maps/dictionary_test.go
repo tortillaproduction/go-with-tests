@@ -3,9 +3,9 @@ package main
 import "testing"
 
 func TestSerach(t *testing.T) {
-	dictionary := map[string]string{"test": "this is just a test"}
+	dictionary := Dictionary{"test": "this is just a test"}
 
-	got := Serach(dictionary, "test")
+	got := dictionary.Serach("test")
 	want := "this is just a test"
 
 	assertStrings(t, got, want)
