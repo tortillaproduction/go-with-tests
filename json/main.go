@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	server := &PlayerServer{NewInMemoryPlayerStore()}
+	server := NewPlayerServer(NewInMemoryPlayerStore())
 
 	fmt.Println("Listening on port 5000")
 	log.Fatal(http.ListenAndServe(":5000", server))
