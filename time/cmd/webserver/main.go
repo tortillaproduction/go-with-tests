@@ -18,6 +18,9 @@ func main() {
 
 	server := poker.NewPlayerServer(store)
 
+	log.Println("Starting the server on port 5000")
+	log.Println("You can visit http://localhost:5000/play to play a game")
+
 	if err := http.ListenAndServe(":5000", server); err != nil {
 		log.Fatalf("could not listen on port 5000 %v", err)
 	}
