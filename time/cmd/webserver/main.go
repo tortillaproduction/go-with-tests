@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	poker "github.com/quii/learn-go-with-tests/command-line/v3"
 )
@@ -10,18 +12,18 @@ import (
 const dbFileName = "game.db.json"
 
 func main() {
-	store, close, err := poker.FileSystemPlayerStoreFromFile(dbFileName)
+	db, err := os.OpenFile(dbFileName, os.O_RDWR|os.O_CREATE, 0o666)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("problem openig %s %v", dbFileName, err)
 	}
-	defer close()
+
+	store, err := poker.NewFileSystemPlayerStore(db)
+	if err != nil {
+		log.Fatalf("problem creating file system player store, %v", err)
+	}
 
 	server := poker.NewPlayerServer(store)
 
-	log.Println("Starting the server on port 5000")
-	log.Println("You can visit http://localhost:5000/play to play a game")
-
-	if err := http.ListenAndServe(":5000", server); err != nil {
-		log.Fatalf("could not listen on port 5000 %v", err)
-	}
+	fmt.Println("Listening on port 5000")
+	log.Fatal(http.ListenAndServe(":5000", server))
 }
