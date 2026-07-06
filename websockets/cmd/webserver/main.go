@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	poker "github.com/quii/learn-go-with-tests/command-line/v3"
+	poker "github.com/tortillaproduction/go-with-tests/websockets"
 )
 
 const dbFileName = "game.db.json"
@@ -22,7 +22,7 @@ func main() {
 		log.Fatalf("problem creating file system player store, %v", err)
 	}
 
-	server := poker.NewPlayerServer(store)
+	server, err := poker.NewPlayerServer(store)
 
 	fmt.Println("Listening on port 5000")
 	log.Fatal(http.ListenAndServe(":5000", server))
