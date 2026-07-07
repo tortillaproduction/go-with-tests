@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	poker "github.com/tortillaproduction/go-with-tests/time"
+	poker "github.com/tortillaproduction/go-with-tests/websockets"
 )
 
 var (
@@ -17,24 +17,19 @@ var (
 )
 
 type GameSpy struct {
-	StartedWith  int
-	FinishedWith string
+	StartCalled     bool
+	StartCalledWith int
 
-	StartCalled    bool
-	FinishedCalled bool
-
-	StartCalledWith  int
+	FinishedCalled   bool
 	FinishCalledWith string
 }
 
-func (g *GameSpy) Start(numberOfPlayers int) {
-	g.StartedWith = numberOfPlayers
+func (g *GameSpy) Start(numberOfPlayers int, out io.Writer) {
 	g.StartCalled = true
 	g.StartCalledWith = numberOfPlayers
 }
 
 func (g *GameSpy) Finish(winner string) {
-	g.FinishedWith = winner
 	g.FinishedCalled = true
 	g.FinishCalledWith = winner
 }
