@@ -5,6 +5,7 @@ import (
 	"io"
 	"strings"
 	"testing"
+	"time"
 
 	poker "github.com/tortillaproduction/go-with-tests/websockets"
 )
@@ -40,13 +41,13 @@ func userSends(message ...string) io.Reader {
 	return strings.NewReader(strings.Join(message, "\n"))
 }
 
+// --- tests ---
 func TestCLI(t *testing.T) {
 	t.Run("start game with 8 players and record 'Cleo' as winner", func(t *testing.T) {
 		game := &GameSpy{}
 		in := userSends("8", "Cleo wins")
 
-		cli := poker.NewCLI(in, dummyStdOut, game)
-		cli.PlayPoker()
+		poker.NewCLI(in, dummyStdOut, game).PlayPoker()
 
 		assertGameStartedWith(t, game, 8)
 		assertFinishCalledWith(t, game, "Cleo")
@@ -97,16 +98,27 @@ func TestCLI(t *testing.T) {
 	})
 }
 
+// --- helpers ---
 func assertGameStartedWith(t testing.TB, game *GameSpy, numberOfPlayersWanted int) {
 	t.Helper()
-	if game.StartCalledWith != numberOfPlayersWanted {
+
+	passed := retryUntil(500*time.Millisecond, func() bool {
+		return game.StartCalledWith == numberOfPlayersWanted
+	})
+
+	if !passed {
 		t.Errorf("wanted start called with %d but got %d", numberOfPlayersWanted, game.StartCalledWith)
 	}
 }
 
 func assertFinishCalledWith(t testing.TB, game *GameSpy, winner string) {
 	t.Helper()
-	if game.FinishCalledWith != winner {
+
+	passed := retryUntil(500*time.Millisecond, func() bool {
+		return game.FinishCalledWith == winner
+	})
+
+	if !passed {
 		t.Errorf("expected finish called with %q but got %q", winner, game.FinishCalledWith)
 	}
 }

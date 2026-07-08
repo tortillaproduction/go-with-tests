@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -63,14 +62,14 @@ var wsUpgrader = websocket.Upgrader{
 }
 
 func (p *PlayerServer) webSocket(w http.ResponseWriter, r *http.Request) {
-	conn, _ := wsUpgrader.Upgrade(w, r, nil)
+	ws := newPlayerServerWS(w, r)
 
-	_, numberOfPlayerMsg, _ := conn.ReadMessage()
-	numberOfPlayers, _ := strconv.Atoi(string(numberOfPlayerMsg))
-	p.game.Start(numberOfPlayers, io.Discard)
+	numberOfPlayerMsg := ws.WaitForMsg()
+	numberOfPlayers, _ := strconv.Atoi(numberOfPlayerMsg)
+	p.game.Start(numberOfPlayers, ws)
 
-	_, winner, _ := conn.ReadMessage()
-	p.game.Finish(string(winner))
+	winner := ws.WaitForMsg()
+	p.game.Finish(winner)
 }
 
 func (p *PlayerServer) playGame(w http.ResponseWriter, r *http.Request) {
