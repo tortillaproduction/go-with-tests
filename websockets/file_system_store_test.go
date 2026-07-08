@@ -1,8 +1,10 @@
-package poker
+package poker_test
 
 import (
 	"os"
 	"testing"
+
+	poker "github.com/tortillaproduction/go-with-tests/websockets"
 )
 
 // --- tests ---
@@ -14,7 +16,7 @@ func TestFileSystemStore(t *testing.T) {
 	// 	]`)
 	// 	defer cleanDatabase()
 
-	// 	store, err := NewFileSystemPlayerStore(database)
+	// 	store, err := poker.NewFileSystemPlayerStore(database)
 	// 	assertNoError(t, err)
 
 	// 	got := store.GetLeague()
@@ -37,7 +39,7 @@ func TestFileSystemStore(t *testing.T) {
 		]`)
 		defer cleanDatabase()
 
-		store, err := NewFileSystemPlayerStore(database)
+		store, err := poker.NewFileSystemPlayerStore(database)
 		assertNoError(t, err)
 
 		got := store.GetPlayerScore("Chris")
@@ -52,7 +54,7 @@ func TestFileSystemStore(t *testing.T) {
 		]`)
 		defer cleanDatabase()
 
-		store, err := NewFileSystemPlayerStore(database)
+		store, err := poker.NewFileSystemPlayerStore(database)
 		assertNoError(t, err)
 
 		store.RecordWin("Chris")
@@ -69,7 +71,7 @@ func TestFileSystemStore(t *testing.T) {
 		]`)
 		defer cleanDatabase()
 
-		store, err := NewFileSystemPlayerStore(database)
+		store, err := poker.NewFileSystemPlayerStore(database)
 		assertNoError(t, err)
 
 		store.RecordWin("Pepper")
@@ -83,7 +85,7 @@ func TestFileSystemStore(t *testing.T) {
 		database, cleanDatabase := createTempFile(t, "")
 		defer cleanDatabase()
 
-		_, err := NewFileSystemPlayerStore(database)
+		_, err := poker.NewFileSystemPlayerStore(database)
 		assertNoError(t, err)
 	})
 
@@ -94,11 +96,11 @@ func TestFileSystemStore(t *testing.T) {
 		]`)
 		defer cleanDatabase()
 
-		store, err := NewFileSystemPlayerStore(database)
+		store, err := poker.NewFileSystemPlayerStore(database)
 		assertNoError(t, err)
 
 		got := store.GetLeague()
-		want := []Player{
+		want := []poker.Player{
 			{"Chris", 33},
 			{"Cleo", 10},
 		}
